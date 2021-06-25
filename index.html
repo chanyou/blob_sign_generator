@@ -111,13 +111,13 @@
         async function textsizeupdate(e) {
             textsize = parseInt(e.value)
             canvas.cle
-            drawTextOnCanvas(text, canvas)
+            await drawTextOnCanvas(text, canvas)
             drawDataURIOnCanvas(canvas)
         }
         async function textupdate(e) {
             text = e.value
 
-            drawTextOnCanvas(text, canvas)
+            await drawTextOnCanvas(text, canvas)
             drawDataURIOnCanvas(canvas)
         }
 
