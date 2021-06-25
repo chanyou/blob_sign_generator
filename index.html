@@ -1,0 +1,54 @@
+<html>
+    <canvas id="canvas">
+        </canvas>
+    <br>
+    <input type="text" id="text" onchange="textupdate(this)"></input>
+    <br>
+    <input type="number" id="textsize" onchange="textsizeupdate(this)"></input>
+    <script>
+        var canvas = document.getElementById('canvas')
+        ctx = canvas.getContext('2d');
+        canvas.width = 128;
+        canvas.crossOrigin = "Anonymous";
+        canvas.height = 128;
+        //ctx.drawImage($('img').get(0), 0, 0);
+        strDataURI = './blob_base.png'
+        var img = new window.Image();
+        var textsize = 34
+        var text = ""
+        img.addEventListener("load", function () {
+            drawDataURIOnCanvas(canvas)
+        });
+        img.setAttribute("src", strDataURI);
+
+        function drawDataURIOnCanvas(canvas) {
+            canvas.getContext("2d").drawImage(img, 0, 0);
+        }
+        async function drawTextOnCanvas(text, canvas) {
+            ctx = canvas.getContext('2d');
+            ctx.save();
+            ctx.font = textsize + "pt Verdana";
+            ctx.fillStyle = "black";
+            ctx.rotate(0.21)
+            ctx.textAlign = "center";
+            ctx.fillText(text,60,82.5 + (textsize - 30)*0.5 );
+            ctx.restore()
+        }
+
+        async function textsizeupdate(e) {
+            textsize = parseInt(e.value)
+            drawDataURIOnCanvas(canvas)
+            drawTextOnCanvas(text, canvas)
+        }
+        async function textupdate(e) {
+            text = e.value
+            drawDataURIOnCanvas(canvas)
+            drawTextOnCanvas(text, canvas)
+        }
+        
+        drawTextOnCanvas("No", canvas)
+    </script> 
+    
+    
+
+</html>
