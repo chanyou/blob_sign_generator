@@ -1,4 +1,17 @@
 <html>
+    <style>
+        #canvas2 {
+            border: 1px solid black;
+            margin-top: 20px;
+        }
+        #canvas2:hover {
+            cursor: none;
+        }
+        .color-bar {
+            display: flex;
+        }
+    </style>
+    <div>
     <canvas id="canvas"></canvas>
     <br>
     <textarea id="text" onchange="textupdate(this)" placeholder="Text"></textarea>
@@ -8,7 +21,15 @@
     <input type="file" id="imagefile" onchange="imageupdate(this)"></input>
     <br>
     <input id="imageurl" onchange="imageurlupdate(this)" placeholder="Image address"></input>
-
+    </div>
+    <div>
+        <canvas width="390" height="240" id="canvas2" style="border: 1px solid black; margin-top: 20px;"></canvas>
+        <div class="color-bar"></div>
+        <button class="clear-button">clear</button>
+        <button class="apply-button">apply</button>
+    </div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/rxjs/7.1.0/rxjs.umd.min.js"></script>
+    <script src="/paint.js"></script>
     <script>
         var canvas = document.getElementById('canvas')
         ctx = canvas.getContext('2d');
@@ -111,6 +132,18 @@
             drawDataURIOnCanvas(canvas);
         }
         drawTextOnCanvas("", canvas)
+        async function main() {
+            const paint = initPaint();
+            document.querySelector('.apply-button').addEventListener('click', async () => {
+                const img = paint.getImageData();
+                await draw(async (ctx) => {
+                    const dataURL = paint.toDataURL();
+                    await drawImage(dataURL, ctx);
+                })
+                drawDataURIOnCanvas(canvas);
+                console.log(img);
+            }, false);
+        }
+        main();
     </script>
-
 </html>
