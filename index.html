@@ -2,7 +2,7 @@
     <canvas id="canvas">
         </canvas>
     <br>
-    <input type="text" id="text" onchange="textupdate(this)" placeholder="Text"></input>
+    <textarea id="text" onchange="textupdate(this)" placeholder="Text"></textarea>
     <br>
     <input type="number" id="textsize" onchange="textsizeupdate(this)" placeholdder="Text size" value=34></input>
     <script>
@@ -29,10 +29,13 @@
             ctx.save();
             ctx.font = textsize + "pt Verdana";
             ctx.fillStyle = "black";
-            ctx.rotate(0.21)
+            ctx.rotate(0.21);
             ctx.textAlign = "center";
-            ctx.fillText(text,60,82.5 + (textsize - 30)*0.5 );
-            ctx.restore()
+            let currentLine = 0;
+            const totalLines = text.split("\n").length;
+            const topMargin = (72.0 - (totalLines * textsize * 1.25)) / 2 + 52.0;
+            text.split("\n").forEach((text) => { ctx.fillText(text, 60, topMargin + textsize * currentLine * 1.25); ++currentLine; } );
+            ctx.restore();
         }
 
         async function textsizeupdate(e) {
