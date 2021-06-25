@@ -26,30 +26,45 @@
         }
         async function drawTextOnCanvas(text, canvas) {
             ctx = canvas.getContext('2d');
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
             ctx.save();
             ctx.font = textsize + "pt Verdana";
             ctx.fillStyle = "black";
-            ctx.rotate(0.21);
+            ctx.rotate(0.195);
             ctx.textAlign = "center";
             let currentLine = 0;
             const totalLines = text.split("\n").length;
-            const topMargin = (72.0 - (totalLines * textsize * 1.25)) / 2 + 52.0;
-            text.split("\n").forEach((text) => { ctx.fillText(text, 60, topMargin + textsize * currentLine * 1.25); ++currentLine; } );
+            //const topMargin = (72.0 - (totalLines * textsize * 1.25)) / 2 + 52.0;
+    
+
+            console.log(totalLines)
+            var textHeight = 0
+            var heights = [0]
+            var ascents = []
+            text.split("\n").forEach((text) => { 
+                textHeight += (ctx.measureText(text).actualBoundingBoxAscent*1.1 + ctx.measureText(text).actualBoundingBoxDescent) 
+                heights.push(textHeight)
+                ascents.push(ctx.measureText(text).actualBoundingBoxAscent*1.1)
+            });
+            const topMargin = (68 - (textHeight)/2)  ;
+            text.split("\n").forEach((text) => { ctx.fillText(text, 60, topMargin + heights[currentLine] + ascents[currentLine] ); ++currentLine; } );
             ctx.restore();
         }
 
         async function textsizeupdate(e) {
             textsize = parseInt(e.value)
-            drawDataURIOnCanvas(canvas)
+            canvas.cle
             drawTextOnCanvas(text, canvas)
+            drawDataURIOnCanvas(canvas)
         }
         async function textupdate(e) {
             text = e.value
-            drawDataURIOnCanvas(canvas)
+            
             drawTextOnCanvas(text, canvas)
+            drawDataURIOnCanvas(canvas)
         }
         
-        drawTextOnCanvas("No", canvas)
+        drawTextOnCanvas("", canvas)
     </script> 
     
     
