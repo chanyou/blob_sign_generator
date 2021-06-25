@@ -29,15 +29,15 @@
             ctx.clearRect(0, 0, canvas.width, canvas.height);
             ctx.save();
             ctx.font = textsize + "pt Verdana";
-            ctx.fillStyle = "black";
+            
             ctx.rotate(0.195);
+            ctx.fillStyle = 'rgba(256,256,256,1)';
+            ctx.fillRect(0,28,130,80)
+            ctx.fillStyle = "black";
             ctx.textAlign = "center";
             let currentLine = 0;
             const totalLines = text.split("\n").length;
-            //const topMargin = (72.0 - (totalLines * textsize * 1.25)) / 2 + 52.0;
-    
-
-            console.log(totalLines)
+            
             var textHeight = 0
             var heights = [0]
             var ascents = []
@@ -46,7 +46,7 @@
                 heights.push(textHeight)
                 ascents.push(ctx.measureText(text).actualBoundingBoxAscent*1.1)
             });
-            const topMargin = (68 - (textHeight)/2)  ;
+            const topMargin = (65 - (textHeight)/2)  ;
             text.split("\n").forEach((text) => { ctx.fillText(text, 60, topMargin + heights[currentLine] + ascents[currentLine] ); ++currentLine; } );
             ctx.restore();
         }
