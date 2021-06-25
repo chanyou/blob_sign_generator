@@ -1,17 +1,20 @@
 <html>
-    <canvas id="canvas">
-        </canvas>
+    <canvas id="canvas"></canvas>
     <br>
     <textarea id="text" onchange="textupdate(this)" placeholder="Text"></textarea>
     <br>
     <input type="number" id="textsize" onchange="textsizeupdate(this)" placeholdder="Text size" value=34></input>
+    <br>
+    <input type="file" id="imagefile" onchange="imageupdate(this)"></input>
+    <br>
+    <input id="imageurl" onchange="imageurlupdate(this)" placeholder="Image address"></input>
+
     <script>
         var canvas = document.getElementById('canvas')
         ctx = canvas.getContext('2d');
         canvas.width = 128;
         canvas.crossOrigin = "Anonymous";
         canvas.height = 128;
-        //ctx.drawImage($('img').get(0), 0, 0);
         strDataURI = './blob_base.png'
         var img = new window.Image();
         var textsize = 34
@@ -24,31 +27,64 @@
         function drawDataURIOnCanvas(canvas) {
             canvas.getContext("2d").drawImage(img, 0, 0);
         }
-        async function drawTextOnCanvas(text, canvas) {
+
+        async function draw(fn) {
             ctx = canvas.getContext('2d');
             ctx.clearRect(0, 0, canvas.width, canvas.height);
             ctx.save();
             ctx.font = textsize + "pt Verdana";
-            
             ctx.rotate(0.195);
             ctx.fillStyle = 'rgba(256,256,256,1)';
-            ctx.fillRect(0,28,130,80)
+            ctx.fillRect(0, 28, 130, 80)
             ctx.fillStyle = "black";
             ctx.textAlign = "center";
-            let currentLine = 0;
-            const totalLines = text.split("\n").length;
-            
-            var textHeight = 0
-            var heights = [0]
-            var ascents = []
-            text.split("\n").forEach((text) => { 
-                textHeight += (ctx.measureText(text).actualBoundingBoxAscent*1.1 + ctx.measureText(text).actualBoundingBoxDescent) 
-                heights.push(textHeight)
-                ascents.push(ctx.measureText(text).actualBoundingBoxAscent*1.1)
-            });
-            const topMargin = (65 - (textHeight)/2)  ;
-            text.split("\n").forEach((text) => { ctx.fillText(text, 60, topMargin + heights[currentLine] + ascents[currentLine] ); ++currentLine; } );
+            await fn(ctx);
             ctx.restore();
+        }
+
+        async function drawTextOnCanvas(text, canvas) {
+            await draw((ctx) => {
+                var textHeight = 0
+                var heights = [0]
+                var ascents = []
+                text.split("\n").forEach((text) => {
+                    textHeight += (ctx.measureText(text).actualBoundingBoxAscent * 1.1 + ctx.measureText(text).actualBoundingBoxDescent)
+                    heights.push(textHeight)
+                    ascents.push(ctx.measureText(text).actualBoundingBoxAscent * 1.1)
+                });
+                const topMargin = (65 - (textHeight) / 2);
+                text.split("\n").forEach((text, currentLine) => { ctx.fillText(text, 60, topMargin + heights[currentLine] + ascents[currentLine]); ++currentLine; });
+            });
+        }
+
+        async function drawImage(imgSrc, ctx) {
+            return new Promise(resolve => {
+                const img = new Image();
+                img.addEventListener('load', async () => {
+                    ctx.drawImage(img, 0, 28, 130, 80);
+                    resolve();
+                }, false)
+                img.src = imgSrc
+            });
+        }
+
+        async function drawImageUrlOnCanvas(url, canvas) {
+            await draw(async (ctx) => {
+                await drawImage(url, ctx);
+            });
+        }
+        async function drawImageFileOnCanvas(file, canvas) {
+            if (!file) return;
+            await draw(async (ctx) => {
+                return new Promise(resolve => {
+                    const reader = new FileReader();
+                    reader.addEventListener('load', async () => {
+                        await drawImage(reader.result, ctx);
+                        resolve();
+                    }, false);
+                    reader.readAsDataURL(file);
+                });
+            });
         }
 
         async function textsizeupdate(e) {
@@ -59,14 +95,22 @@
         }
         async function textupdate(e) {
             text = e.value
-            
+
             drawTextOnCanvas(text, canvas)
             drawDataURIOnCanvas(canvas)
         }
-        
+
+        async function imageupdate(e) {
+            let file = e.files[0];
+            await drawImageFileOnCanvas(file, canvas);
+            drawDataURIOnCanvas(canvas);
+        }
+
+        async function imageurlupdate(e) {
+            await drawImageUrlOnCanvas(e.value, canvas);
+            drawDataURIOnCanvas(canvas);
+        }
         drawTextOnCanvas("", canvas)
-    </script> 
-    
-    
+    </script>
 
 </html>
