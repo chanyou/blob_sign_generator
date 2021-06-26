@@ -38,7 +38,8 @@
         canvas.height = 128;
         strDataURI = './blob_base.png'
         var img = new window.Image();
-        var textsize = 34
+        var maxtextsize = 34
+        var textsize = maxtextsize
         var text = ""
         img.addEventListener("load", function () {
             drawDataURIOnCanvas(canvas)
@@ -110,12 +111,17 @@
 
         async function textsizeupdate(e) {
             textsize = parseInt(e.value)
-            canvas.cle
             await drawTextOnCanvas(text, canvas)
             drawDataURIOnCanvas(canvas)
         }
         async function textupdate(e) {
             text = e.value
+            textInput = document.getElementById('textsize')
+            ctx = canvas.getContext('2d')
+
+            width = ctx.measureText(text).width
+            textsize = Math.min(Math.ceil(600 / width), maxtextsize)
+            textInput.value = textsize
 
             await drawTextOnCanvas(text, canvas)
             drawDataURIOnCanvas(canvas)
@@ -141,7 +147,6 @@
                     await drawImage(dataURL, ctx);
                 })
                 drawDataURIOnCanvas(canvas);
-                console.log(img);
             }, false);
         }
         main();
