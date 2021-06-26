@@ -118,8 +118,7 @@
             text = e.value
             textInput = document.getElementById('textsize')
             ctx = canvas.getContext('2d')
-
-            width = ctx.measureText(text).width
+            width = Math.max( ... text.split("\n").map( textline => ctx.measureText(textline).width ) )
             textsize = Math.min(Math.ceil(600 / width), maxtextsize)
             textInput.value = textsize
 
