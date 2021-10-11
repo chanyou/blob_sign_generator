@@ -1,4 +1,4 @@
-# blob_picket_generator
-A simple blob picket generator
+# blob_sign_generator
+A simple blob sign generator
 
-https://chanyou.github.io/blob_picket_generator
+https://chanyou.github.io/blob_sign_generator
