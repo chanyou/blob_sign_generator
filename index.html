@@ -121,7 +121,7 @@
             ctx = canvas.getContext('2d')
             ctx.font = "8pt Verdana";
             width = Math.max( ... text.split("\n").map( textline => ctx.measureText(textline).width ) )
-            textsize = Math.min(Math.ceil(600 / width * 1.3), maxtextsize)
+            textsize = Math.min(Math.ceil(600 / width * 1.45), maxtextsize)
             textInput.value = textsize
 
             await drawTextOnCanvas(text, canvas)
