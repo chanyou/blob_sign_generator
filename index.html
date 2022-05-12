@@ -39,7 +39,7 @@
         canvas.height = 128;
         strDataURI = './blob_base.png'
         var img = new window.Image();
-        var maxtextsize = 34
+        var maxtextsize = 60
         var textsize = maxtextsize
         var text = ""
         img.addEventListener("load", function () {
@@ -119,8 +119,9 @@
             text = e.value
             textInput = document.getElementById('textsize')
             ctx = canvas.getContext('2d')
+            ctx.font = "8pt Verdana";
             width = Math.max( ... text.split("\n").map( textline => ctx.measureText(textline).width ) )
-            textsize = Math.min(Math.ceil(600 / width), maxtextsize)
+            textsize = Math.min(Math.ceil(600 / width * 1.3), maxtextsize)
             textInput.value = textsize
 
             await drawTextOnCanvas(text, canvas)
